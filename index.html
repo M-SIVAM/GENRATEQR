@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free online QR Code Generator with custom colors, patterns, and logo support. Create beautiful QR codes instantly!">
+    <meta name="keywords" content="QR code, QR generator, custom QR code, QR code with logo">
+    <meta name="author" content="HACKFEST2K26">
+    <meta property="og:title" content="QR Code Generator - Create Custom QR Codes">
+    <meta property="og:description" content="Free online QR Code Generator with custom colors, patterns, and logo support.">
+    <meta property="og:type" content="website">
+    <title>QR Code Generator | Create Custom QR Codes Free</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-qrcode"></i>
+                <span>QR Generator</span>
+            </div>
+            <nav class="nav-links">
+                <a href="#generator" class="nav-link active">Generator</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#how-it-works" class="nav-link">How It Works</a>
+            </nav>
+            <button class="theme-toggle" id="theme-toggle" title="Toggle Dark Mode">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Create Stunning QR Codes</h1>
+            <p class="hero-subtitle">Free • Customizable • Instant Download</p>
+        </div>
+    </section>
+
+    <!-- Main Generator Section -->
+    <main class="main-content" id="generator">
+        <div class="container">
+            <div class="content">
+                <div class="input-section">
+                    <div class="section-card">
+                        <h2 class="card-title"><i class="fas fa-link"></i> Enter Content</h2>
+                        <textarea id="qr-text" placeholder="Enter URL, text, phone number, email..." rows="3"></textarea>
+                    </div>
+                    
+                    <div class="section-card">
+                        <h2 class="card-title"><i class="fas fa-sliders-h"></i> Basic Settings</h2>
+                        <div class="options">
+                            <div class="options-row">
+                                <div class="option-group">
+                                    <label for="qr-size">Size</label>
+                                    <select id="qr-size">
+                                        <option value="200">Small (200px)</option>
+                                        <option value="300" selected>Medium (300px)</option>
+                                        <option value="400">Large (400px)</option>
+                                        <option value="500">XL (500px)</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="option-group">
+                                    <label for="error-correction">Dot Density</label>
+                                    <select id="error-correction">
+                                        <option value="L">Low (Minimal)</option>
+                                        <option value="M" selected>Medium</option>
+                                        <option value="Q">High</option>
+                                        <option value="H">Maximum</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="options-row">
+                                <div class="option-group">
+                                    <label for="qr-color">QR Color</label>
+                                    <div class="color-input-wrapper">
+                                        <input type="color" id="qr-color" value="#000000">
+                                        <span class="color-value">#000000</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="option-group">
+                                    <label for="qr-bg-color">Background</label>
+                                    <div class="color-input-wrapper">
+                                        <input type="color" id="qr-bg-color" value="#ffffff">
+                                        <span class="color-value">#FFFFFF</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h2 class="card-title"><i class="fas fa-paint-brush"></i> Dot Style</h2>
+                        <div class="options-row">
+                            <div class="option-group">
+                                <label for="dot-style">Pattern</label>
+                                <select id="dot-style">
+                                    <option value="square">Square</option>
+                                    <option value="dots" selected>Dots</option>
+                                    <option value="rounded">Rounded</option>
+                                    <option value="extra-rounded">Extra Rounded</option>
+                                    <option value="classy">Classy</option>
+                                    <option value="classy-rounded">Classy Rounded</option>
+                                </select>
+                            </div>
+                            <div class="option-group">
+                                <label for="dot-color">Color</label>
+                                <input type="color" id="dot-color" value="#000000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h2 class="card-title"><i class="fas fa-border-style"></i> Corner Styles</h2>
+                        <div class="options-row">
+                            <div class="option-group">
+                                <label for="corner-square-style">Outer Corner</label>
+                                <select id="corner-square-style">
+                                    <option value="square">Square</option>
+                                    <option value="dot">Rounded</option>
+                                    <option value="extra-rounded" selected>Extra Rounded</option>
+                                </select>
+                            </div>
+                            <div class="option-group">
+                                <label for="corner-square-color">Color</label>
+                                <input type="color" id="corner-square-color" value="#000000">
+                            </div>
+                        </div>
+                        <div class="options-row">
+                            <div class="option-group">
+                                <label for="corner-dot-style">Inner Corner</label>
+                                <select id="corner-dot-style">
+                                    <option value="square">Square</option>
+                                    <option value="dot" selected>Rounded</option>
+                                </select>
+                            </div>
+                            <div class="option-group">
+                                <label for="corner-dot-color">Color</label>
+                                <input type="color" id="corner-dot-color" value="#000000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h2 class="card-title"><i class="fas fa-image"></i> Center Logo</h2>
+                        <div class="logo-upload-section">
+                            <div class="file-upload-wrapper">
+                                <input type="file" id="logo-upload" accept="image/*">
+                                <label for="logo-upload" class="file-upload-label">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span>Choose Image or Drag Here</span>
+                                </label>
+                            </div>
+                            <div class="logo-preview-container">
+                                <img id="logo-preview" src="" alt="Logo Preview" style="display: none;">
+                                <button type="button" id="remove-logo" onclick="removeLogo()" style="display: none;">
+                                    <i class="fas fa-times"></i> Remove
+                                </button>
+                            </div>
+                            <div class="options-row">
+                                <div class="option-group">
+                                    <label for="logo-size">Logo Size</label>
+                                    <select id="logo-size">
+                                        <option value="0.2">Small (20%)</option>
+                                        <option value="0.3" selected>Medium (30%)</option>
+                                        <option value="0.4">Large (40%)</option>
+                                    </select>
+                                </div>
+                                <div class="option-group">
+                                    <label for="logo-margin">Margin</label>
+                                    <select id="logo-margin">
+                                        <option value="0">None</option>
+                                        <option value="5" selected>Small</option>
+                                        <option value="10">Medium</option>
+                                        <option value="15">Large</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button id="generate-btn" onclick="generateQRCode()">
+                        <i class="fas fa-magic"></i> Generate QR Code
+                    </button>
+                </div>
+                
+                <div class="qr-section">
+                    <div class="qr-preview-card">
+                        <h2 class="card-title"><i class="fas fa-eye"></i> Preview</h2>
+                        <div id="qr-code">
+                            <div class="qr-placeholder">
+                                <i class="fas fa-qrcode"></i>
+                                <p>Your QR Code will appear here</p>
+                            </div>
+                        </div>
+                        <div id="qr-actions" style="display: none;">
+                            <button id="download-btn" onclick="downloadQRCode()">
+                                <i class="fas fa-download"></i> PNG
+                            </button>
+                            <button id="download-svg-btn" onclick="downloadSVG()">
+                                <i class="fas fa-file-code"></i> SVG
+                            </button>
+                            <button id="clear-btn" onclick="clearQRCode()">
+                                <i class="fas fa-trash"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="features-container">
+            <h2 class="section-heading">Why Choose Our Generator?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-palette"></i></div>
+                    <h3>Fully Customizable</h3>
+                    <p>Choose colors, patterns, and styles to match your brand</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                    <h3>Instant Generation</h3>
+                    <p>Create QR codes in seconds, no signup required</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>100% Free & Secure</h3>
+                    <p>No data stored, everything processed in your browser</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-file-image"></i></div>
+                    <h3>High Quality Export</h3>
+                    <p>Download in PNG or SVG format for any use case</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="how-container">
+            <h2 class="section-heading">How It Works</h2>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Enter Content</h3>
+                    <p>Type or paste your URL, text, or any data</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Customize</h3>
+                    <p>Choose colors, patterns, and add your logo</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Download</h3>
+                    <p>Export as PNG or SVG and use anywhere</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <i class="fas fa-qrcode"></i>
+                <span>QR Generator</span>
+            </div>
+            <p class="footer-text">Made with <i class="fas fa-heart"></i> for HACKFEST 2K26</p>
+            <div class="footer-links">
+                <a href="#generator">Generator</a>
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
+            </div>
+            <p class="copyright">&copy; 2026 QR Generator. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script src="https://unpkg.com/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
