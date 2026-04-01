@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theme Toggle Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {}
+            }
+        }
+    </script>
+</head>
+<body class="bg-white dark:bg-gray-900 text-black dark:text-white transition-colors duration-300">
+    <div class="flex items-center justify-center min-h-screen">
+        <div class="text-center">
+            <h1 class="text-4xl font-bold mb-8">Theme Toggle Test</h1>
+            
+            <button onclick="toggleDarkMode()" class="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg mb-8">
+                Click to Toggle Dark/Light Mode
+            </button>
+            
+            <div class="bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 p-8 rounded-lg max-w-md">
+                <p class="text-lg mb-4">
+                    <strong>Current Mode:</strong> 
+                    <span id="mode">Light</span>
+                </p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    Background should be WHITE in light mode and DARK GRAY in dark mode.
+                </p>
+            </div>
+            
+            <p class="mt-8 text-sm text-gray-500 dark:text-gray-400">
+                Open DevTools (F12) to see console logs
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
+            
+            if (isDark) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                document.getElementById('mode').textContent = 'Light';
+                console.log("✓ Switched to Light Mode");
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                document.getElementById('mode').textContent = 'Dark';
+                console.log("✓ Switched to Dark Mode");
+            }
+        }
+        
+        // Initialize theme on page load
+        window.addEventListener('load', () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.getElementById('mode').textContent = 'Dark';
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.getElementById('mode').textContent = 'Light';
+            }
+        });
+        
+        console.log("Test page loaded. Click the button to toggle theme.");
+    </script>
+</body>
+</html>

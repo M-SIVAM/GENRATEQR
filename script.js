@@ -1,207 +1,167 @@
 let qrCode = null;
-let logoImage = null;
+let currentLogo = null;
 
-// Dark mode toggle
-const themeToggle = document.getElementById('theme-toggle');
-const body = document.body;
+const defaultOptions = {
+    width: 500,
+    height: 500,
+    type: "canvas",
+    data: "https://example.com",
+    image: "",
+    margin: 10,
+    qrOptions: {
+        typeNumber: 0,
+        mode: "Byte",
+        errorCorrectionLevel: "M"
+    },
+    imageOptions: {
+        hideBackgroundDots: true,
+        imageSize: 0.4,
+        margin: 5,
+        crossOrigin: "anonymous",
+    },
+    dotsOptions: {
+        color: "#000000",
+        type: "square"
+    },
+    backgroundOptions: {
+        color: "#ffffff",
+    },
+    cornersSquareOptions: {
+        color: "#000000",
+        type: "square"
+    },
+    cornersDotOptions: {
+        color: "#000000",
+        type: "square"
+    }
+};
 
-// Check for saved theme preference
-if (localStorage.getItem('darkMode') === 'true') {
-    body.classList.add('dark-mode');
-    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-}
+let options = JSON.parse(JSON.stringify(defaultOptions));
 
-themeToggle.addEventListener('click', () => {
-    body.classList.toggle('dark-mode');
-    const isDark = body.classList.contains('dark-mode');
-    localStorage.setItem('darkMode', isDark);
-    themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM Loaded - Initializing app");
+    initTheme();
+    qrCode = new QRCodeStyling(options);
+    qrCode.append(document.getElementById('qr-code'));
+    attachEventListeners();
+    updateQRCode();
 });
 
-// Color picker value display
-document.querySelectorAll('input[type="color"]').forEach(input => {
-    input.addEventListener('input', function() {
-        const wrapper = this.closest('.color-input-wrapper');
-        if (wrapper) {
-            const valueSpan = wrapper.querySelector('.color-value');
-            if (valueSpan) {
-                valueSpan.textContent = this.value.toUpperCase();
-            }
+function attachEventListeners() {
+    document.getElementById('generate-btn').addEventListener('click', updateQRCode);
+
+    const inputs = [
+        'qr-text', 'qr-size', 'qr-ecc', 'qr-color', 'bg-color', 
+        'dot-pattern', 'dot-color', 'outer-corner', 'outer-color', 
+        'inner-corner', 'inner-color', 'logo-size', 'logo-margin'
+    ];
+    
+    inputs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', () => {
+                if(el.type === 'color') {
+                    const textEl = document.getElementById(id + '-text');
+                    if(textEl) textEl.innerText = el.value.toUpperCase();
+                }
+                updateQRCode();
+            });
         }
     });
-});
 
-// Handle logo upload
-document.getElementById('logo-upload').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            logoImage = event.target.result;
-            const preview = document.getElementById('logo-preview');
-            preview.src = logoImage;
-            preview.style.display = 'block';
-            document.getElementById('remove-logo').style.display = 'inline-flex';
-            
-            // Update file upload label
-            const label = document.querySelector('.file-upload-label span');
-            label.textContent = file.name;
-        };
-        reader.readAsDataURL(file);
-    }
-});
-
-function removeLogo() {
-    logoImage = null;
-    document.getElementById('logo-upload').value = '';
-    document.getElementById('logo-preview').style.display = 'none';
-    document.getElementById('remove-logo').style.display = 'none';
-    
-    // Reset label
-    const label = document.querySelector('.file-upload-label span');
-    label.textContent = 'Choose Image or Drag Here';
+    document.getElementById('logo-upload').addEventListener('change', handleLogoUpload);
 }
 
-function generateQRCode() {
-    const text = document.getElementById('qr-text').value.trim();
-    const size = parseInt(document.getElementById('qr-size').value);
-    const bgColor = document.getElementById('qr-bg-color').value;
+function handleLogoUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
     
-    // Dot options
-    const dotStyle = document.getElementById('dot-style').value;
-    const dotColor = document.getElementById('dot-color').value;
-    
-    // Corner square options (the 3 big boxes)
-    const cornerSquareStyle = document.getElementById('corner-square-style').value;
-    const cornerSquareColor = document.getElementById('corner-square-color').value;
-    
-    // Corner dot options (inside the 3 boxes)
-    const cornerDotStyle = document.getElementById('corner-dot-style').value;
-    const cornerDotColor = document.getElementById('corner-dot-color').value;
-    
-    // Logo options
-    const logoSize = parseFloat(document.getElementById('logo-size').value);
-    const logoMargin = parseInt(document.getElementById('logo-margin').value);
-    
-    // Error correction (affects dot density)
-    const errorCorrection = document.getElementById('error-correction').value;
-    
-    // Validate input
-    if (!text) {
-        alert('Please enter text or URL to generate QR code!');
-        return;
-    }
-    
-    // Clear previous QR code
-    clearQRCode();
-    
-    // Get container
-    const qrContainer = document.getElementById('qr-code');
-    
-    // Build QR code options
-    const qrOptions = {
-        width: size,
-        height: size,
-        type: "canvas",
-        data: text,
-        dotsOptions: {
-            color: dotColor,
-            type: dotStyle
-        },
-        cornersSquareOptions: {
-            color: cornerSquareColor,
-            type: cornerSquareStyle
-        },
-        cornersDotOptions: {
-            color: cornerDotColor,
-            type: cornerDotStyle
-        },
-        backgroundOptions: {
-            color: bgColor
-        },
-        imageOptions: {
-            crossOrigin: "anonymous",
-            margin: logoMargin,
-            imageSize: logoSize,
-            hideBackgroundDots: true
-        },
-        qrOptions: {
-            errorCorrectionLevel: errorCorrection
-        }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        currentLogo = event.target.result;
+        updateQRCode();
     };
+    reader.readAsDataURL(file);
+}
+
+function updateQRCode() {
+    options.data = document.getElementById('qr-text').value || "https://example.com";
     
-    // Add logo if uploaded
-    if (logoImage) {
-        qrOptions.image = logoImage;
+    const size = parseInt(document.getElementById('qr-size').value);
+    options.width = size;
+    options.height = size;
+    options.qrOptions.errorCorrectionLevel = document.getElementById('qr-ecc').value;
+    
+    const qrColor = document.getElementById('qr-color').value;
+    const dotColor = document.getElementById('dot-color').value;
+    options.backgroundOptions.color = document.getElementById('bg-color').value;
+    
+    options.dotsOptions.color = dotColor !== "#000000" ? dotColor : qrColor;
+    options.dotsOptions.type = document.getElementById('dot-pattern').value;
+    
+    options.cornersSquareOptions.type = document.getElementById('outer-corner').value;
+    options.cornersSquareOptions.color = document.getElementById('outer-color').value !== "#000000" ? document.getElementById('outer-color').value : qrColor;
+    
+    options.cornersDotOptions.type = document.getElementById('inner-corner').value;
+    options.cornersDotOptions.color = document.getElementById('inner-color').value !== "#000000" ? document.getElementById('inner-color').value : qrColor;
+    
+    if (currentLogo) {
+        options.image = currentLogo;
+        options.imageOptions.imageSize = parseFloat(document.getElementById('logo-size').value);
+        options.imageOptions.margin = parseInt(document.getElementById('logo-margin').value);
+    } else {
+        options.image = "";
     }
-    
-    // Create new QR code with advanced styling
-    qrCode = new QRCodeStyling(qrOptions);
-    
-    // Append to container
-    qrCode.append(qrContainer);
-    
-    // Show action buttons
-    document.getElementById('qr-actions').style.display = 'flex';
+
+    qrCode.update(options);
 }
 
 function downloadQRCode() {
-    if (!qrCode) {
-        alert('Please generate a QR code first!');
-        return;
+    if (qrCode) {
+        qrCode.download({ name: "qr-code", extension: "png" });
     }
+}
+
+function downloadSVgQRCode() {
+    if (qrCode) {
+        qrCode.download({ name: "qr-code", extension: "svg" });
+    }
+}
+
+function initTheme() {
+    console.log("initTheme() called");
+    const isDarkMode = localStorage.getItem("theme") === "dark" || (!localStorage.getItem("theme") && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    console.log("isDarkMode:", isDarkMode);
     
-    qrCode.download({
-        name: "qrcode",
-        extension: "png"
-    });
+    if (isDarkMode) {
+        document.documentElement.classList.add("dark");
+        console.log("Added dark class to html");
+    } else {
+        document.documentElement.classList.remove("dark");
+        console.log("Removed dark class from html");
+    }
 }
 
-function downloadSVG() {
-    if (!qrCode) {
-        alert('Please generate a QR code first!');
-        return;
-    }
+function toggleTheme() {
+    console.log("toggleTheme() called");
+    const html = document.documentElement;
+    const isDark = html.classList.contains("dark");
+    console.log("Current dark state:", isDark);
     
-    qrCode.download({
-        name: "qrcode",
-        extension: "svg"
-    });
-}
-
-function clearQRCode() {
-    const qrContainer = document.getElementById('qr-code');
-    qrContainer.innerHTML = `
-        <div class="qr-placeholder">
-            <i class="fas fa-qrcode"></i>
-            <p>Your QR Code will appear here</p>
-        </div>
-    `;
-    qrCode = null;
-    document.getElementById('qr-actions').style.display = 'none';
-}
-
-// Sync main color with all color pickers
-document.getElementById('qr-color').addEventListener('input', function() {
-    const color = this.value;
-    document.getElementById('dot-color').value = color;
-    document.getElementById('corner-square-color').value = color;
-    document.getElementById('corner-dot-color').value = color;
-});
-
-// Generate QR code on Enter key
-document.getElementById('qr-text').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        generateQRCode();
+    if (isDark) {
+        html.classList.remove("dark");
+        localStorage.setItem("theme", "light");
+        console.log("Switched to Light Mode");
+    } else {
+        html.classList.add("dark");
+        localStorage.setItem("theme", "dark");
+        console.log("Switched to Dark Mode");
     }
-});
+}
 
-// Auto-generate on option change (optional - uncomment if desired)
-// document.querySelectorAll('select, input[type="color"]').forEach(el => {
-//     el.addEventListener('change', () => {
-//         if (document.getElementById('qr-text').value.trim()) {
-//             generateQRCode();
-//         }
-//     });
-// });
+function toggleMobileMenu() {
+    const menu = document.getElementById("mobile-menu");
+    if (menu) {
+        menu.classList.toggle("open");
+    }
+}
